@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erasmus+ Internship Weekly Record</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+    margin: 0;
+    padding: 35px 20px;
+    background: #f1f1f1;
+    font-family: Arial, sans-serif;
+    color: #222;
+}
+
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+/* Separate settings panel */
+.workspace {
+    display: grid;
+    grid-template-columns: 270px minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.main-content {
+    min-width: 0;
+}
+
+.settings-panel {
+    background: #fff;
+    border: 1px solid #d9e0e5;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 18px rgba(30, 55, 75, 0.06);
+    position: sticky;
+    top: 20px;
+}
+
+.settings-heading {
+    margin: 0 0 6px;
+    font-size: 17px;
+    color: #263b4b;
+}
+
+.settings-description {
+    margin: 0 0 18px;
+    color: #78838b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.time-field {
+    margin-bottom: 14px;
+}
+
+.time-field label {
+    display: block;
+    margin-bottom: 6px;
+    color: #53616b;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.time-picker {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.time-picker input {
+    width: 78px;
+    height: 43px;
+    padding: 8px;
+    border: 1px solid #cbd5dc;
+    border-radius: 7px;
+    background: #fbfcfd;
+    color: #263b4b;
+    font: inherit;
+    font-size: 18px;
+    text-align: center;
+}
+
+.time-picker input:focus {
+    outline: none;
+    border-color: #7899ad;
+    box-shadow: 0 0 0 3px rgba(120, 153, 173, 0.15);
+}
+
+.time-separator {
+    font-size: 20px;
+    font-weight: bold;
+    color: #53616b;
+}
+
+.schedule-preview {
+    margin-top: 17px;
+    padding: 13px;
+    border-radius: 8px;
+    background: #f2f6f8;
+    color: #526574;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.schedule-preview strong {
+    display: block;
+    margin-bottom: 5px;
+    color: #344b5b;
+}
+
+.add-break-button {
+    width: 100%;
+    margin: 0 0 14px;
+    padding: 9px 10px;
+    background: #eef4f7;
+    color: #40596d;
+    border: 1px dashed #9aafbd;
+    border-radius: 7px;
+    font-size: 12px;
+}
+
+.add-break-button:hover { background: #e2edf2; }
+
+.second-break-fields {
+    padding: 12px;
+    margin: 0 0 14px;
+    border: 1px solid #d9e3e9;
+    border-radius: 8px;
+    background: #fbfcfd;
+}
+
+.second-break-fields[hidden] { display: none; }
+
+.second-break-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    color: #344b5b;
+    font-size: 12px;
+}
+
+.remove-break-button {
+    padding: 5px 8px;
+    background: #f3eeee;
+    color: #8a4d4d;
+    font-size: 11px;
+}
+
+.remove-break-button:hover { background: #eadfdf; }
+
+.total-hours {
+    margin: 20px 0 28px;
+    padding: 17px 20px;
+    background: #fff;
+    border: 1px solid #d9e0e5;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.total-hours-label {
+    color: #53616b;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .04em;
+}
+
+.total-hours-value {
+    color: #263b4b;
+    font-size: 23px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 850px) {
+    .workspace {
+        grid-template-columns: 1fr;
+    }
+
+    .settings-panel {
+        position: static;
+    }
+}
+
+/* Original page and table styling */
+.page-title {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.page-title h1 {
+    font-size: 25px;
+    margin-bottom: 7px;
+}
+
+.page-title p {
+    color: #777;
+    font-size: 14px;
+}
+
+.week-sheet {
+    background: white;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid #ddd;
+    overflow-x: auto;
+}
+
+.logos {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 18px;
+    padding: 0 5px;
+}
+
+.eu-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 25px;
+    color: #222;
+}
+
+.eu-flag {
+    background: #263b83;
+    color: #ffdf36;
+    padding: 8px 13px;
+    font-size: 23px;
+}
+
+.amfi-logo {
+    text-align: center;
+    color: #425d70;
+    font-size: 21px;
+    font-weight: bold;
+}
+
+.amfi-logo small {
+    display: block;
+    font-size: 11px;
+    font-weight: normal;
+}
+
+table {
+    width: 100%;
+    min-width: 780px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+th {
+    background: #b7ced9;
+    border: 1px solid #222;
+    padding: 10px 6px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 12px;
+    font-weight: normal;
+    line-height: 1.4;
+    height: 75px;
+}
+
+td {
+    border: 1px solid #222;
+    height: 63px;
+    padding: 4px;
+}
+
+.week-col { width: 8%; }
+.date-col { width: 15%; }
+.schedule-col { width: 15%; }
+.signature-col { width: 26%; }
+.activities-col { width: 36%; }
+
+td input, td textarea {
+    width: 100%;
+    height: 100%;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    font-family: Arial, sans-serif;
+    font-size: 12px;
+    color: #222;
+    padding: 7px 4px;
+}
+
+td input[type="date"] { font-size: 11px; }
+td textarea { line-height: 1.5; }
+
+.week-number {
+    text-align: center;
+    vertical-align: middle;
+}
+
+.week-number input {
+    text-align: center;
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.activities {
+    vertical-align: top;
+    height: 315px;
+}
+
+.activities textarea {
+    padding: 12px;
+    font-size: 13px;
+}
+
+/* Daily schedule checkbox */
+.schedule-cell {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    gap: 3px;
+}
+
+.schedule-toggle {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.schedule-toggle input {
+    width: 13px;
+    height: 13px;
+    margin: 0;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.schedule-cell textarea {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    padding: 3px;
+    font-size: 11px;
+    line-height: 1.3;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin: 25px 0;
+    flex-wrap: wrap;
+}
+
+button {
+    border: none;
+    border-radius: 7px;
+    padding: 12px 20px;
+    cursor: pointer;
+    background: #526f85;
+    color: white;
+    font-size: 13px;
+}
+
+button:hover { background: #40596d; }
+button:disabled { opacity: 0.6; cursor: wait; }
+
+@media print {
+    body { background: white; padding: 0; }
+
+    .week-sheet {
+        border: none;
+        page-break-after: always;
+        padding: 10px;
+    }
+
+    .actions,
+    .settings-panel,
+    .total-hours {
+        display: none;
+    }
+
+    .workspace {
+        display: block;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <div class="page-title">
+        <h1>Erasmus+ Internship Record</h1>
+        <p>Weekly Attendance and Activities</p>
+    </div>
+
+    <div class="workspace">
+
+        <!-- Working hours settings on the left -->
+        <aside class="settings-panel">
+
+            <h2 class="settings-heading">Working hours</h2>
+
+            <p class="settings-description">
+                Choose your usual workday. Breaks are automatically excluded
+                from the working hours.
+            </p>
+
+            <div class="time-field">
+                <label>Work starts</label>
+                <div class="time-picker">
+                    <input type="number" id="work-start-hour"
+                           min="0" max="23" step="1" value="09"
+                           aria-label="Work start hour">
+                    <span class="time-separator">:</span>
+                    <input type="number" id="work-start-minute"
+                           min="0" max="59" step="1" value="00"
+                           aria-label="Work start minute">
+                </div>
+            </div>
+
+            <div class="time-field">
+                <label>Break starts</label>
+                <div class="time-picker">
+                    <input type="number" id="break-start-hour"
+                           min="0" max="23" step="1" value="13"
+                           aria-label="Break start hour">
+                    <span class="time-separator">:</span>
+                    <input type="number" id="break-start-minute"
+                           min="0" max="59" step="1" value="00"
+                           aria-label="Break start minute">
+                </div>
+            </div>
+
+            <div class="time-field">
+                <label>Break ends</label>
+                <div class="time-picker">
+                    <input type="number" id="break-end-hour"
+                           min="0" max="23" step="1" value="14"
+                           aria-label="Break end hour">
+                    <span class="time-separator">:</span>
+                    <input type="number" id="break-end-minute"
+                           min="0" max="59" step="1" value="00"
+                           aria-label="Break end minute">
+                </div>
+            </div>
+
+            <button type="button" id="add-break-button"
+                    class="add-break-button"
+                    onclick="addSecondBreak()">
+                + Add another break
+            </button>
+
+            <div id="second-break-fields"
+                 class="second-break-fields" hidden>
+
+                <div class="second-break-heading">
+                    <strong>Second break</strong>
+                    <button type="button"
+                            class="remove-break-button"
+                            onclick="removeSecondBreak()">
+                        Remove
+                    </button>
+                </div>
+
+                <div class="time-field">
+                    <label>Second break starts</label>
+                    <div class="time-picker">
+                        <input type="number" id="second-break-start-hour"
+                               min="0" max="23" step="1" value="15"
+                               aria-label="Second break start hour">
+                        <span class="time-separator">:</span>
+                        <input type="number" id="second-break-start-minute"
+                               min="0" max="59" step="1" value="00"
+                               aria-label="Second break start minute">
+                    </div>
+                </div>
+
+                <div class="time-field">
+                    <label>Second break ends</label>
+                    <div class="time-picker">
+                        <input type="number" id="second-break-end-hour"
+                               min="0" max="23" step="1" value="15"
+                               aria-label="Second break end hour">
+                        <span class="time-separator">:</span>
+                        <input type="number" id="second-break-end-minute"
+                               min="0" max="59" step="1" value="15"
+                               aria-label="Second break end minute">
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="time-field">
+                <label>Work finishes</label>
+                <div class="time-picker">
+                    <input type="number" id="work-end-hour"
+                           min="0" max="23" step="1" value="17"
+                           aria-label="Work finish hour">
+                    <span class="time-separator">:</span>
+                    <input type="number" id="work-end-minute"
+                           min="0" max="59" step="1" value="00"
+                           aria-label="Work finish minute">
+                </div>
+            </div>
+
+            <div class="schedule-preview" id="schedule-preview">
+                <strong>Working intervals</strong>
+                <div id="preview-intervals">
+                    <div>09:00 - 13:00</div>
+                    <div>14:00 - 17:00</div>
+                </div>
+                <div id="preview-duration">Total: 7 hours</div>
+            </div>
+
+        </aside>
+
+        <!-- Original weekly table -->
+        <main class="main-content">
+            <div id="weeks"></div>
+        </main>
+
+    </div>
+
+    <div class="total-hours">
+        <span class="total-hours-label">TOTAL WORKING HOURS</span>
+        <span class="total-hours-value" id="total-hours">0 hours</span>
+    </div>
+
+    <div class="actions">
+        <button onclick="addWeek()">+ Add Week</button>
+        <button id="save-button" onclick="saveWeeks()">Save All Weeks</button>
+        <button onclick="window.print()">Print / Save PDF</button>
+    </div>
+
+</div>
+
+{{ saved_weeks|json_script:"saved-weeks-data" }}
+
+<script>
+let weekCount = 0;
+
+
+/* Read hours and minutes from the number fields */
+function getTimeValue(prefix) {
+
+    const hourText =
+        document.getElementById(prefix + "-hour").value.trim();
+
+    const minuteText =
+        document.getElementById(prefix + "-minute").value.trim();
+
+    if (hourText === "" || minuteText === "") return "";
+
+    const hours = Number(hourText);
+    const minutes = Number(minuteText);
+
+    if (!Number.isInteger(hours) || hours < 0 || hours > 23) {
+        return "";
+    }
+
+    if (!Number.isInteger(minutes) || minutes < 0 || minutes > 59) {
+        return "";
+    }
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+
+/* Convert HH:MM to minutes */
+function timeToMinutes(value) {
+    const [hours, minutes] = value.split(":").map(Number);
+    return hours * 60 + minutes;
+}
+
+
+/* Build the standard work schedule */
+function getStandardSchedule() {
+
+    const start = getTimeValue("work-start");
+    const breakStart = getTimeValue("break-start");
+    const breakEnd = getTimeValue("break-end");
+    const end = getTimeValue("work-end");
+
+    if (!start || !breakStart || !breakEnd || !end) {
+        return "";
+    }
+
+    const startMinutes = timeToMinutes(start);
+    const breakStartMinutes = timeToMinutes(breakStart);
+    const breakEndMinutes = timeToMinutes(breakEnd);
+    const endMinutes = timeToMinutes(end);
+
+    if (
+        startMinutes >= breakStartMinutes ||
+        breakStartMinutes >= breakEndMinutes ||
+        breakEndMinutes >= endMinutes
+    ) {
+        return "";
+    }
+
+    const intervals = [];
+
+    if (isSecondBreakEnabled()) {
+
+        const secondBreakStart = getTimeValue("second-break-start");
+        const secondBreakEnd = getTimeValue("second-break-end");
+
+        if (!secondBreakStart || !secondBreakEnd) {
+            return "";
+        }
+
+        const secondStartMinutes = timeToMinutes(secondBreakStart);
+        const secondEndMinutes = timeToMinutes(secondBreakEnd);
+
+        if (
+            secondStartMinutes <= breakEndMinutes ||
+            secondStartMinutes >= secondEndMinutes ||
+            secondEndMinutes >= endMinutes
+        ) {
+            return "";
+        }
+
+        intervals.push(`${start} - ${breakStart}`);
+        intervals.push(`${breakEnd} - ${secondBreakStart}`);
+        intervals.push(`${secondBreakEnd} - ${end}`);
+
+    } else {
+
+        intervals.push(`${start} - ${breakStart}`);
+        intervals.push(`${breakEnd} - ${end}`);
+    }
+
+    return intervals.join("\n");
+}
+
+
+/* Calculate hours from all written intervals */
+function calculateScheduleHours(schedule) {
+
+    const intervals = schedule.match(
+        /([0-2]?[0-9]):([0-5][0-9])\s*-\s*([0-2]?[0-9]):([0-5][0-9])/g
+    ) || [];
+
+    let totalMinutes = 0;
+
+    intervals.forEach(interval => {
+
+        const match = interval.match(
+            /([0-2]?[0-9]):([0-5][0-9])\s*-\s*([0-2]?[0-9]):([0-5][0-9])/
+        );
+
+        const start = Number(match[1]) * 60 + Number(match[2]);
+        const end = Number(match[3]) * 60 + Number(match[4]);
+
+        if (end > start) {
+            totalMinutes += end - start;
+        }
+    });
+
+    return totalMinutes;
+}
+
+
+function formatHours(minutes) {
+
+    const hours = Math.floor(minutes / 60);
+    const remainder = minutes % 60;
+
+    if (remainder === 0) {
+        return `${hours} ${hours === 1 ? "hour" : "hours"}`;
+    }
+
+    return `${hours}h ${remainder}m`;
+}
+
+
+/* Update the preview on the left */
+function updateSchedulePreview() {
+
+    const schedule = getStandardSchedule();
+    const lines = schedule ? schedule.split("\n") : [];
+    const total = calculateScheduleHours(schedule);
+    const intervalsContainer = document.getElementById("preview-intervals");
+
+    intervalsContainer.innerHTML = "";
+
+    if (lines.length) {
+        lines.forEach(line => {
+            const lineElement = document.createElement("div");
+            lineElement.textContent = line;
+            intervalsContainer.appendChild(lineElement);
+        });
+    } else {
+        const error = document.createElement("div");
+        error.textContent = "Check the selected times";
+        intervalsContainer.appendChild(error);
+    }
+
+    document.getElementById("preview-duration").textContent =
+        schedule
+            ? `Total: ${formatHours(total)}`
+            : "Please check the time order.";
+}
+
+
+/* Calculate total hours for all weeks */
+function updateTotalHours() {
+
+    let totalMinutes = 0;
+
+    document.querySelectorAll(".schedule-input").forEach(input => {
+        totalMinutes += calculateScheduleHours(input.value);
+    });
+
+    document.getElementById("total-hours").textContent =
+        formatHours(totalMinutes);
+}
+
+
+/* Update only days with the standard-hours checkbox enabled */
+function applyStandardScheduleToCheckedDays() {
+
+    const schedule = getStandardSchedule();
+
+    document.querySelectorAll(".week-sheet .schedule-cell").forEach(cell => {
+
+        const checkbox = cell.querySelector(".standard-checkbox");
+        const input = cell.querySelector(".schedule-input");
+
+        if (checkbox.checked) {
+            input.value = schedule;
+        }
+    });
+
+    updateTotalHours();
+}
+
+
+/* Create one week */
+function createWeek(number) {
+
+    const section = document.createElement("section");
+    section.className = "week-sheet";
+
+    const standardSchedule = getStandardSchedule();
+
+    section.innerHTML = `
+        <div class="logos">
+
+            <div class="eu-logo">
+                <span class="eu-flag">✦</span>
+                <span>Erasmus+</span>
+            </div>
+
+            <div class="amfi-logo">
+                🌍 AMFI
+                <small>International</small>
+            </div>
+
+        </div>
+
+        <table>
+
+            <colgroup>
+                <col class="week-col">
+                <col class="date-col">
+                <col class="schedule-col">
+                <col class="signature-col">
+                <col class="activities-col">
+            </colgroup>
+
+            <thead>
+                <tr>
+                    <th>Settimana |<br>Week</th>
+                    <th>Data | Date</th>
+                    <th>Orario di Lavoro |<br>Working Schedule</th>
+                    <th>Firma del Tutor |<br>Tutor's signature</th>
+                    <th>Attività svolte durante la settimana |<br>Tasks performed during the week</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                ${[1,2,3,4,5].map((day, index) => `
+
+                    <tr>
+
+                        ${index === 0 ? `
+                            <td rowspan="5" class="week-number">
+                                <input type="number" value="${number}" min="1">
+                            </td>
+                        ` : ""}
+
+                        <td>
+                            <input type="date">
+                        </td>
+
+                        <td>
+                            <div class="schedule-cell">
+
+                                <label class="schedule-toggle">
+                                    <input
+                                        type="checkbox"
+                                        class="standard-checkbox"
+                                        checked
+                                    >
+                                    Standard hours
+                                </label>
+
+                                <textarea class="schedule-input">${standardSchedule}</textarea>
+
+                            </div>
+                        </td>
+
+                        <td>
+                            <input type="text">
+                        </td>
+
+                        ${index === 0 ? `
+                            <td rowspan="5" class="activities">
+                                <textarea placeholder="Describe the activities performed during this week..."></textarea>
+                            </td>
+                        ` : ""}
+
+                    </tr>
+
+                `).join("")}
+
+            </tbody>
+
+        </table>
+    `;
+
+
+    /* Each day has its own checkbox */
+    const dayRows = section.querySelectorAll("tbody tr");
+
+    dayRows.forEach(row => {
+
+        const checkbox = row.querySelector(".standard-checkbox");
+        const scheduleInput = row.querySelector(".schedule-input");
+
+        checkbox.addEventListener("change", function() {
+
+            scheduleInput.value = checkbox.checked
+                ? getStandardSchedule()
+                : "";
+
+            updateTotalHours();
+        });
+
+        scheduleInput.addEventListener("input", updateTotalHours);
+    });
+
+    return section;
+}
+
+
+/* Add a new week */
+function addWeek() {
+
+    weekCount++;
+
+    document.getElementById("weeks").appendChild(
+        createWeek(weekCount)
+    );
+
+    updateTotalHours();
+}
+
+
+/* Collect data from one week */
+function collectWeek(section) {
+
+    const rows = section.querySelectorAll("tbody tr");
+
+    const days = Array.from(rows).map(row => {
+
+        const cells = row.querySelectorAll("td");
+        const offset = row.querySelector(".week-number") ? 1 : 0;
+
+        return {
+            date: cells[offset].querySelector("input").value,
+
+            schedule: cells[offset + 1].querySelector("textarea").value,
+
+            tutor_signature: cells[offset + 2].querySelector("input").value
+        };
+    });
+
+    return {
+        number: section.querySelector(".week-number input").value,
+
+        activities: section.querySelector(".activities textarea").value,
+
+        days: days
+    };
+}
+
+
+/* Save all weeks to Django */
+async function saveWeeks() {
+
+    const button = document.getElementById("save-button");
+    const sections = document.querySelectorAll(".week-sheet");
+
+    button.disabled = true;
+    button.textContent = "Saving...";
+
+    try {
+
+        const weeks = Array.from(sections).map(collectWeek);
+
+        const response = await fetch("/save-week/", {
+
+            method: "POST",
+
+            headers: {
+                "Content-Type": "application/json"
+            },
+
+            body: JSON.stringify({ weeks: weeks })
+        });
+
+        const result = await response.json();
+
+        if (!response.ok || !result.success) {
+            throw new Error(result.error || "Saving failed");
+        }
+
+        alert("All weeks saved successfully!");
+
+    } catch (error) {
+
+        console.error(error);
+
+        alert("Error saving weeks: " + error.message);
+
+    } finally {
+
+        button.disabled = false;
+        button.textContent = "Save All Weeks";
+    }
+}
+
+
+/* Load saved weeks from Django database */
+function loadSavedWeeks() {
+
+    const savedWeeks = JSON.parse(
+        document.getElementById("saved-weeks-data").textContent
+    );
+
+    if (savedWeeks.length === 0) {
+        addWeek();
+        return;
+    }
+
+    savedWeeks.forEach(saved => {
+
+        const section = createWeek(saved.number);
+        const rows = section.querySelectorAll("tbody tr");
+
+        saved.days.forEach((day, index) => {
+
+            if (!rows[index]) return;
+
+            const cells = rows[index].querySelectorAll("td");
+            const offset = rows[index].querySelector(".week-number") ? 1 : 0;
+
+            cells[offset].querySelector("input").value =
+                day.date || "";
+
+            const scheduleInput =
+                cells[offset + 1].querySelector("textarea");
+
+            scheduleInput.value = day.schedule || "";
+
+            cells[offset + 2].querySelector("input").value =
+                day.tutor_signature || "";
+
+            const checkbox =
+                rows[index].querySelector(".standard-checkbox");
+
+            checkbox.checked =
+                scheduleInput.value.trim() === getStandardSchedule().trim();
+        });
+
+        section.querySelector(".activities textarea").value =
+            saved.activities || "";
+
+        document.getElementById("weeks").appendChild(section);
+
+        weekCount = Math.max(
+            weekCount,
+            Number(saved.number) || weekCount + 1
+        );
+    });
+
+    updateTotalHours();
+}
+
+
+/* Check whether the second break is enabled */
+function isSecondBreakEnabled() {
+    return !document.getElementById("second-break-fields").hidden;
+}
+
+
+/* Show the second break fields */
+function addSecondBreak() {
+    document.getElementById("second-break-fields").hidden = false;
+    document.getElementById("add-break-button").hidden = true;
+
+    updateSchedulePreview();
+    applyStandardScheduleToCheckedDays();
+}
+
+
+/* Hide the second break fields */
+function removeSecondBreak() {
+    document.getElementById("second-break-fields").hidden = true;
+    document.getElementById("add-break-button").hidden = false;
+
+    updateSchedulePreview();
+    applyStandardScheduleToCheckedDays();
+}
+
+
+/* Listen for changes in all time fields */
+[
+    "work-start",
+    "break-start",
+    "break-end",
+    "work-end",
+    "second-break-start",
+    "second-break-end"
+].forEach(prefix => {
+
+    ["hour", "minute"].forEach(part => {
+
+        const field = document.getElementById(`${prefix}-${part}`);
+
+        field.addEventListener("input", () => {
+            updateSchedulePreview();
+            applyStandardScheduleToCheckedDays();
+        });
+
+        field.addEventListener("change", () => {
+
+            const max = part === "hour" ? 23 : 59;
+
+            if (field.value !== "") {
+                field.value = String(
+                    Math.min(max, Math.max(0, Number(field.value)))
+                );
+            }
+
+            updateSchedulePreview();
+            applyStandardScheduleToCheckedDays();
+        });
+
+    });
+
+});
+
+
+/* Start the page */
+loadSavedWeeks();
+
+updateSchedulePreview();
+
+updateTotalHours();
+
+</script>
+
+</body>
+</html>
