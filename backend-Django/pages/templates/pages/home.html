@@ -375,23 +375,165 @@ button {
 button:hover { background: #40596d; }
 button:disabled { opacity: 0.6; cursor: wait; }
 
-@media print {
-    body { background: white; padding: 0; }
+@page {
+    size: A4 portrait;
+    margin: 8mm;
+}
 
-    .week-sheet {
-        border: none;
-        page-break-after: always;
-        padding: 10px;
+@media print {
+    html,
+    body {
+        width: 100%;
+        margin: 0;
+        padding: 0;
+        background: #fff !important;
+        color: #000;
+        font-size: 10px;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .container,
+    .workspace,
+    .main-content {
+        display: block !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+    }
+
+    .page-title {
+        margin: 0 0 6mm;
+    }
+
+    .page-title h1 {
+        font-size: 16px;
+        margin: 0 0 2mm;
+    }
+
+    .page-title p {
+        font-size: 10px;
+        margin: 0;
     }
 
     .actions,
     .settings-panel,
-    .total-hours {
-        display: none;
+    .total-hours,
+    .schedule-toggle {
+        display: none !important;
     }
 
-    .workspace {
-        display: block;
+    .week-sheet {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        border: none !important;
+        box-shadow: none !important;
+        overflow: visible !important;
+        page-break-after: always;
+        break-after: page;
+    }
+
+    .week-sheet:last-child {
+        page-break-after: auto;
+        break-after: auto;
+    }
+
+    .logos {
+        margin-bottom: 4mm;
+    }
+
+    .eu-logo {
+        font-size: 14px;
+    }
+
+    .eu-flag {
+        padding: 3px 7px;
+        font-size: 12px;
+    }
+
+    .amfi-logo {
+        font-size: 13px;
+    }
+
+    .amfi-logo small {
+        font-size: 8px;
+    }
+
+    table {
+        width: 100% !important;
+        min-width: 0 !important;
+        table-layout: fixed !important;
+        border-collapse: collapse !important;
+        font-size: 9px;
+    }
+
+    th {
+        height: auto !important;
+        padding: 4px 3px !important;
+        font-size: 8px !important;
+        line-height: 1.2 !important;
+    }
+
+    td {
+        height: auto !important;
+        padding: 2px !important;
+        vertical-align: top;
+    }
+
+    .week-col { width: 7%; }
+    .date-col { width: 15%; }
+    .schedule-col { width: 17%; }
+    .signature-col { width: 24%; }
+    .activities-col { width: 37%; }
+
+    td input,
+    td textarea {
+        font-size: 8px !important;
+        padding: 2px !important;
+        line-height: 1.25 !important;
+        height: auto !important;
+        min-height: 0 !important;
+    }
+
+    td input[type="date"] {
+        font-size: 7px !important;
+    }
+
+    .week-number input {
+        font-size: 11px !important;
+    }
+
+    .activities {
+        height: auto !important;
+    }
+
+    .activities textarea {
+        height: 115mm !important;
+        padding: 3px !important;
+        font-size: 9px !important;
+        line-height: 1.3 !important;
+    }
+
+    .schedule-cell {
+        height: auto !important;
+        gap: 1px !important;
+    }
+
+    .schedule-cell textarea {
+        height: auto !important;
+        min-height: 16mm !important;
+        font-size: 7px !important;
+        padding: 2px !important;
+    }
+
+    table,
+    tr,
+    td {
+        page-break-inside: avoid;
+        break-inside: avoid;
     }
 }
 </style>
