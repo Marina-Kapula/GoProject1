@@ -13,6 +13,11 @@
 
 
     <style>
+
+
+
+
+
         /* Все размеры считаются вместе с отступами и рамками */
         * { box-sizing: border-box; }
 
@@ -35,30 +40,27 @@
 
 
         /* Две колонки: слева настройки, справа таблицы недель */
-        .workspace {
-            display: grid;
-            grid-template-columns: 270px minmax(0, 1fr);
-            gap: 24px;
-            align-items: start;
-        }
+.workspace {
+    display: grid !important;
+    grid-template-columns: 240px minmax(0, 1fr) !important;
+    gap: 24px;
+    align-items: start;
+}
 
 
-        /* Правая часть с таблицами */
-        .main-content {
-            min-width: 0;
-        }
+.main-content {
+    grid-column: 2;
+    grid-row: 1;
+    width: 100%;
+    min-width: 0;
+}
 
 
         /* Белая панель настроек слева */
-        .settings-panel {
-            background: #fff;
-            border: 1px solid #d9e0e5;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 4px 18px rgba(30, 55, 75, 0.06);
-            position: sticky;
-            top: 20px;
-        }
+.settings-panel {
+    grid-column: 1;
+    grid-row: 1;
+}
 
 
         /* Заголовок в панели настроек */
@@ -238,6 +240,30 @@
             font-variant-numeric: tabular-nums;
         }
 
+        /* Центрируем бланки недель относительно всего экрана */
+#weeks {
+    width: calc(100% + 252px) !important;
+    margin-left: -252px !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+}
+
+#weeks .week-sheet {
+    width: 100% !important;
+    max-width: 850px !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+/* На узких экранах возвращаем обычное центрирование */
+@media (max-width: 850px) {
+    #weeks {
+        width: 100% !important;
+        margin-left: 0 !important;
+    }
+}
+        
 
         /* Если экран узкий — колонки становятся друг под другом */
         @media (max-width: 850px) {
@@ -272,13 +298,17 @@
 
 
         /* Одна неделя: белый блок с таблицей */
-        .week-sheet {
-            background: white;
-            padding: 25px;
-            margin-bottom: 30px;
-            border: 1px solid #ddd;
-            overflow-x: auto;
-        }
+.week-sheet {
+    width: 100%;
+    max-width: 850px;
+    margin: 0 auto 30px;
+    padding: 25px;
+    background: white;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 15px #00000020;
+    position: relative;
+    overflow-x: auto;
+}
 
 
         /* Логотипы сверху таблицы */
