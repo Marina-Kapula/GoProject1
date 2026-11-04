@@ -1,0 +1,492 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Erasmus+ Internship Journal</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 30px;
+    background: #e9e6df;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #292929;
+}
+
+.toolbar {
+    max-width: 850px;
+    margin: 0 auto 20px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.toolbar button {
+    padding: 11px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    background: #173b70;
+    color: white;
+    font-size: 14px;
+}
+
+.toolbar button:hover {
+    opacity: .85;
+}
+
+.toolbar .reset {
+    background: #777;
+}
+
+.page {
+    width: 100%;
+    max-width: 850px;
+    min-height: 1100px;
+    margin: auto;
+    padding: 30px 35px 45px;
+    background: #fffefa;
+    box-shadow: 0 2px 15px #00000020;
+    position: relative;
+}
+
+/* Стрелочка справа от бланка */
+.page-navigation {
+    position: fixed;
+    top: 50%;
+    right: max(10px, calc((100% - 960px) / 2));
+    transform: translateY(-50%);
+    z-index: 9999;
+}
+
+.page-navigation a {
+    font-size: 35px;
+    color: #526f85;
+    text-decoration: none;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.erasmus {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: #263d68;
+    font-size: 32px;
+    font-weight: 500;
+}
+
+.eu-flag {
+    width: 68px;
+    height: 46px;
+    background: #153c8a;
+    color: #ffdf43;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 25px;
+    letter-spacing: 1px;
+}
+
+.amfi {
+    text-align: center;
+    color: #31566d;
+    font-weight: bold;
+    font-size: 24px;
+}
+
+.amfi small {
+    display: block;
+    font-size: 12px;
+}
+
+.main-title {
+    text-align: center;
+    color: #203b66;
+    font-size: 21px;
+    font-weight: bold;
+    margin: 15px 0 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-size: 13px;
+}
+
+td {
+    border: 1px solid #777;
+    padding: 8px 7px;
+    vertical-align: middle;
+    overflow-wrap: break-word;
+}
+
+td:first-child {
+    width: 52%;
+}
+
+td:last-child {
+    width: 48%;
+    text-align: center;
+}
+
+.section {
+    background: #a9c5d2;
+    color: #263e54;
+    text-align: center !important;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 8px;
+}
+
+.value {
+    min-height: 35px;
+}
+
+[contenteditable="true"] {
+    outline: none;
+    cursor: text;
+}
+
+[contenteditable="true"]:focus {
+    background: #fff6d8;
+    outline: 1px dashed #4777a8;
+}
+
+.blank-area {
+    height: 85px;
+}
+
+.hours-area {
+    height: 40px;
+}
+
+.obligations {
+    font-size: 11px;
+    line-height: 1.35;
+    padding: 9px 12px;
+}
+
+.obligations ol {
+    margin: 0;
+    padding-left: 22px;
+}
+
+.obligations li {
+    padding-left: 4px;
+    margin-bottom: 5px;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 8px;
+    }
+
+    .page {
+        padding: 15px 10px;
+        min-height: auto;
+    }
+
+    .erasmus {
+        font-size: 20px;
+    }
+
+    .eu-flag {
+        width: 48px;
+        height: 33px;
+        font-size: 18px;
+    }
+
+    .amfi {
+        font-size: 17px;
+    }
+
+    td {
+        font-size: 10px;
+        padding: 6px 4px;
+    }
+
+    .obligations {
+        font-size: 9px;
+    }
+
+    .toolbar {
+        flex-wrap: wrap;
+    }
+}
+
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .toolbar {
+        display: none;
+    }
+
+    .page {
+        width: 100%;
+        max-width: none;
+        min-height: 0;
+        padding: 20px 25px;
+        box-shadow: none;
+    }
+
+    [contenteditable="true"]:focus {
+        background: transparent;
+        outline: none;
+    }
+
+    @page {
+        size: A4;
+        margin: 12mm;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="page-navigation">
+    <a href="/">→</a>
+</div>
+
+<div class="toolbar">
+    <button onclick="savePage()">💾 Save</button>
+    <button onclick="window.print()">🖨 Print / PDF</button>
+    <button class="reset" onclick="resetPage()">Reset</button>
+</div>
+
+<div class="page" id="journal">
+
+    <div class="header">
+        <div class="erasmus">
+            <div class="eu-flag">✦ ✧</div>
+            <span contenteditable="true">Erasmus+</span>
+        </div>
+
+        <div class="amfi" contenteditable="true">
+            🌍 AMFI
+            <small>International</small>
+        </div>
+    </div>
+
+    <div class="main-title" contenteditable="true">
+        INTERNSHIP'S JOURNAL
+    </div>
+
+    <table>
+        <tr>
+            <td colspan="2" class="section">
+                Dati del partecipante | Participant Info
+            </td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">
+                Nome e Cognome | Name and Surname
+            </td>
+            <td contenteditable="true" class="value">
+                Maryna Kapula
+            </td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">
+                Nome dell'organizzazione di invio |
+                Name of sending organization
+            </td>
+            <td contenteditable="true" class="value">
+                SOUTH SAVO VOCATIONAL COLLEGE - Finland
+            </td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">
+                Settore di studio | Field of studies
+            </td>
+            <td contenteditable="true" class="value">
+                WEB DEVELOPMENT
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="section">
+                Dati dell'azienda ospitante | Host Company Info
+            </td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">
+                Nome dell'azienda ospitante |
+                Name of the hosting company
+            </td>
+            <td contenteditable="true" class="value">
+                GO PROJECT SRL
+            </td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">
+                Nome e Cognome del Tutor |
+                Tutor's Name and Surname
+            </td>
+            <td contenteditable="true" class="value">
+                Andrea Basile
+            </td>
+        </tr>
+
+        <tr>
+            <td contenteditable="true">
+                Incarico | Position
+            </td>
+            <td contenteditable="true" class="value">
+                General Manager
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="section">
+                Attività e mansioni da realizzare |
+                Tasks and activities
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2"
+                class="blank-area"
+                contenteditable="true">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="section">
+                Numero totale delle ore lavorative |
+                Total number of working hours
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2"
+                class="hours-area"
+                contenteditable="true">
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="section">
+                Obblighi del Partecipante |
+                Participant's obligations
+            </td>
+        </tr>
+
+        <tr>
+            <td colspan="2" class="obligations">
+                <ol>
+                    <li contenteditable="true">
+                        Ci si aspetta che, come tirocinante,
+                        mostrerai rispetto verso l'azienda ospitante,
+                        i dipendenti e le sue proprietà. |
+                        It is expected that as an intern, you will show
+                        respect for your hosting company, its employees
+                        and properties.
+                    </li>
+
+                    <li contenteditable="true">
+                        È obbligatorio arrivare in orario sul posto
+                        di lavoro. I ritardi non possono essere tollerati. |
+                        You are obliged to be on time for work every day.
+                        Arriving late is not excusable.
+                    </li>
+
+                    <li contenteditable="true">
+                        In caso di assenza dal posto di lavoro
+                        (anche solo per un giorno), dovrai fornire
+                        il certificato medico. |
+                        If you are absent from work (even for one day),
+                        you need to go to a doctor and get a medical
+                        certificate for your illness.
+                    </li>
+
+                    <li contenteditable="true">
+                        Dovrai indossare abiti adatti sul lavoro. |
+                        You must dress correctly at work.
+                    </li>
+
+                    <li contenteditable="true">
+                        Dovrai mostrare flessibilità essendo parte
+                        di una squadra e offrire il tuo aiuto quando
+                        possibile. |
+                        You must be flexible and work as part of a team.
+                        Offer to help where possible and be willing
+                        to do tasks as requested from your colleagues
+                        and/or supervisor.
+                    </li>
+
+                    <li contenteditable="true">
+                        Non ti spettano giorni di vacanza, dovrai
+                        essere presente sul posto di lavoro fino
+                        alla data di fine tirocinio. |
+                        You are not entitled to holidays and you must
+                        and you must stay in your hosting company
+                        until the final date.
+                    </li>
+
+                    <li contenteditable="true">
+                        Ci porremo regolarmente in contatto con
+                        l'azienda per assicurarci il corretto
+                        andamento del tirocinio. |
+                        We will contact your company regularly to
+                        ensure that you are performing well at all times.
+                    </li>
+                </ol>
+            </td>
+        </tr>
+    </table>
+
+</div>
+
+<script>
+const STORAGE_KEY = "erasmus_internship_journal";
+
+function savePage() {
+    const content = document.getElementById("journal").innerHTML;
+
+    localStorage.setItem(STORAGE_KEY, content);
+
+    alert("Journal saved successfully!");
+}
+
+function loadPage() {
+    const saved = localStorage.getItem(STORAGE_KEY);
+
+    if (saved) {
+        document.getElementById("journal").innerHTML = saved;
+    }
+}
+
+function resetPage() {
+    if (confirm("Reset the journal to its original template?")) {
+        localStorage.removeItem(STORAGE_KEY);
+        location.reload();
+    }
+}
+
+loadPage();
+</script>
+
+</body>
+</html>

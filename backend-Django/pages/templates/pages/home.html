@@ -1,388 +1,550 @@
 <!DOCTYPE html>
+<!-- Начало HTML-страницы -->
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Erasmus+ Internship Weekly Record</title>
+    <!-- Кодировка, чтобы буквы отображались нормально -->
+    <meta charset="UTF-8">
 
-<style>
-* { box-sizing: border-box; }
+    <!-- Чтобы страница нормально выглядела на телефоне -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-body {
-    margin: 0;
-    padding: 35px 20px;
-    background: #f1f1f1;
-    font-family: Arial, sans-serif;
-    color: #222;
+    <!-- Название вкладки в браузере -->
+    <title>Erasmus+ Internship Weekly Record</title>
+
+
+    <style>
+        /* Все размеры считаются вместе с отступами и рамками */
+        * { box-sizing: border-box; }
+
+
+        /* Общий вид страницы: отступы, фон, шрифт */
+        body {
+            margin: 0;
+            padding: 35px 20px;
+            background: #f1f1f1;
+            font-family: Arial, sans-serif;
+            color: #222;
+        }
+
+
+        /* Общий контейнер всей страницы */
+        .container {
+            max-width: 1400px;
+            margin: auto;
+        }
+
+
+        /* Две колонки: слева настройки, справа таблицы недель */
+        .workspace {
+            display: grid;
+            grid-template-columns: 270px minmax(0, 1fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+
+        /* Правая часть с таблицами */
+        .main-content {
+            min-width: 0;
+        }
+
+
+        /* Белая панель настроек слева */
+        .settings-panel {
+            background: #fff;
+            border: 1px solid #d9e0e5;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 18px rgba(30, 55, 75, 0.06);
+            position: sticky;
+            top: 20px;
+        }
+
+
+        /* Заголовок в панели настроек */
+        .settings-heading {
+            margin: 0 0 6px;
+            font-size: 17px;
+            color: #263b4b;
+        }
+
+
+        /* Описание под заголовком */
+        .settings-description {
+            margin: 0 0 18px;
+            color: #78838b;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+
+        /* Один блок с полями времени */
+        .time-field {
+            margin-bottom: 14px;
+        }
+
+
+        /* Надпись над полями времени */
+        .time-field label {
+            display: block;
+            margin-bottom: 6px;
+            color: #53616b;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+
+        /* Часы и минуты стоят рядом */
+        .time-picker {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+
+        /* Как выглядят поля для часов и минут */
+        .time-picker input {
+            width: 78px;
+            height: 43px;
+            padding: 8px;
+            border: 1px solid #cbd5dc;
+            border-radius: 7px;
+            background: #fbfcfd;
+            color: #263b4b;
+            font: inherit;
+            font-size: 18px;
+            text-align: center;
+        }
+
+
+        /* Как выглядит поле, когда на него нажали */
+        .time-picker input:focus {
+            outline: none;
+            border-color: #7899ad;
+            box-shadow: 0 0 0 3px rgba(120, 153, 173, 0.15);
+        }
+
+
+        /* Двоеточие между часами и минутами */
+        .time-separator {
+            font-size: 20px;
+            font-weight: bold;
+            color: #53616b;
+        }
+
+
+        /* Блок с предпросмотром рабочего времени */
+        .schedule-preview {
+            margin-top: 17px;
+            padding: 13px;
+            border-radius: 8px;
+            background: #f2f6f8;
+            color: #526574;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+
+        /* Жирный текст внутри предпросмотра */
+        .schedule-preview strong {
+            display: block;
+            margin-bottom: 5px;
+            color: #344b5b;
+        }
+
+
+        /* Кнопка «добавить второй перерыв» */
+        .add-break-button {
+            width: 100%;
+            margin: 0 0 14px;
+            padding: 9px 10px;
+            background: #eef4f7;
+            color: #40596d;
+            border: 1px dashed #9aafbd;
+            border-radius: 7px;
+            font-size: 12px;
+        }
+
+
+        /* Цвет кнопки при наведении мышкой */
+        .add-break-button:hover { background: #e2edf2; }
+
+
+        /* Скрытый блок со вторым перерывом */
+        .second-break-fields {
+            padding: 12px;
+            margin: 0 0 14px;
+            border: 1px solid #d9e3e9;
+            border-radius: 8px;
+            background: #fbfcfd;
+        }
+
+
+        /* Если блок скрыт — он не показывается */
+        .second-break-fields[hidden] { display: none; }
+
+
+        /* Заголовок второго перерыва */
+        .second-break-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #344b5b;
+            font-size: 12px;
+        }
+
+
+        /* Кнопка «убрать второй перерыв» */
+        .remove-break-button {
+            padding: 5px 8px;
+            background: #f3eeee;
+            color: #8a4d4d;
+            font-size: 11px;
+        }
+
+
+        .remove-break-button:hover { background: #eadfdf; }
+
+
+        /* Блок с общим количеством часов */
+        .total-hours {
+            margin: 20px 0 28px;
+            padding: 17px 20px;
+            background: #fff;
+            border: 1px solid #d9e0e5;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+
+        /* Надпись TOTAL WORKING HOURS */
+        .total-hours-label {
+            color: #53616b;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: .04em;
+        }
+
+
+        /* Большая цифра с часами */
+        .total-hours-value {
+            color: #263b4b;
+            font-size: 23px;
+            font-weight: 700;
+            font-variant-numeric: tabular-nums;
+        }
+
+
+        /* Если экран узкий — колонки становятся друг под другом */
+        @media (max-width: 850px) {
+            .workspace {
+                grid-template-columns: 1fr;
+            }
+
+
+            .settings-panel {
+                position: static;
+            }
+        }
+
+
+        /* Заголовок страницы сверху */
+        .page-title {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+
+        .page-title h1 {
+            font-size: 25px;
+            margin-bottom: 7px;
+        }
+
+
+        .page-title p {
+            color: #777;
+            font-size: 14px;
+        }
+
+
+        /* Одна неделя: белый блок с таблицей */
+        .week-sheet {
+            background: white;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 1px solid #ddd;
+            overflow-x: auto;
+        }
+
+
+        /* Логотипы сверху таблицы */
+        .logos {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding: 0 5px;
+        }
+
+
+        /* Логотип Erasmus+ */
+        .eu-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 25px;
+            color: #222;
+        }
+
+
+        .eu-flag {
+            background: #263b83;
+            color: #ffdf36;
+            padding: 8px 13px;
+            font-size: 23px;
+        }
+
+
+        /* Логотип AMFI */
+        .amfi-logo {
+            text-align: center;
+            color: #425d70;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+
+        .amfi-logo small {
+            display: block;
+            font-size: 11px;
+            font-weight: normal;
+        }
+
+
+        /* Таблица недели */
+        table {
+            width: 100%;
+            min-width: 780px;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+
+
+        /* Заголовки таблицы */
+        th {
+            background: #b7ced9;
+            border: 1px solid #222;
+            padding: 10px 6px;
+            text-align: center;
+            vertical-align: middle;
+            font-size: 12px;
+            font-weight: normal;
+            line-height: 1.4;
+            height: 75px;
+        }
+
+
+        /* Обычные ячейки таблицы */
+        td {
+            border: 1px solid #222;
+            height: 63px;
+            padding: 4px;
+        }
+
+
+        /* Ширина колонок таблицы */
+        .week-col { width: 8%; }
+        .date-col { width: 15%; }
+        .schedule-col { width: 15%; }
+        .signature-col { width: 26%; }
+        .activities-col { width: 36%; }
+
+
+        /* Поля ввода внутри таблицы */
+        td input, td textarea {
+            width: 100%;
+            height: 100%;
+            border: none;
+            outline: none;
+            resize: none;
+            background: transparent;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #222;
+            padding: 7px 4px;
+        }
+
+
+        td input[type="date"] { font-size: 11px; }
+        td textarea { line-height: 1.5; }
+
+
+        /* Колонка с номером недели */
+        .week-number {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+
+        .week-number input {
+            text-align: center;
+            font-size: 17px;
+            font-weight: bold;
+        }
+
+
+        /* Большое поле «Activities» справа */
+        .activities {
+            vertical-align: top;
+            height: 315px;
+        }
+
+
+        .activities textarea {
+            padding: 12px;
+            font-size: 13px;
+        }
+
+
+        /* Ячейка с графиком работы */
+        .schedule-cell {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            gap: 3px;
+        }
+
+
+        /* Галочка Standard hours */
+        .schedule-toggle {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+
+        .schedule-toggle input {
+            width: 13px;
+            height: 13px;
+            margin: 0;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+
+        /* Поле с рабочим временем */
+        .schedule-cell textarea {
+            flex: 1;
+            min-height: 0;
+            width: 100%;
+            padding: 3px;
+            font-size: 11px;
+            line-height: 1.3;
+        }
+
+
+        /* Кнопки внизу страницы */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 25px 0;
+            flex-wrap: wrap;
+        }
+
+
+        /* Общий вид кнопок */
+        button {
+            border: none;
+            border-radius: 7px;
+            padding: 12px 20px;
+            cursor: pointer;
+            background: #526f85;
+            color: white;
+            font-size: 13px;
+        }
+
+
+        button:hover { background: #40596d; }
+        button:disabled { opacity: 0.6; cursor: wait; }
+
+
+        /* НАСТРОЙКА ПЕЧАТИ: лист А4, вертикально, поля 8 мм */
+/* НАСТРОЙКА ПЕЧАТИ: лист А4 */
+@page {
+    size: A4 portrait;
+    margin: 8mm;
 }
 
-.container {
-    max-width: 1400px;
-    margin: auto;
-}
-
-/* Separate settings panel */
+/* Настройки времени слева */
 .workspace {
-    display: grid;
-    grid-template-columns: 270px minmax(0, 1fr);
-    gap: 24px;
-    align-items: start;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 12px;
+}
+
+.settings-panel {
+    margin-left: 0;
+    justify-self: start;
+    width: 100%;
+    max-width: 240px;
 }
 
 .main-content {
     min-width: 0;
 }
 
-.settings-panel {
-    background: #fff;
-    border: 1px solid #d9e0e5;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0 4px 18px rgba(30, 55, 75, 0.06);
-    position: sticky;
-    top: 20px;
-}
-
-.settings-heading {
-    margin: 0 0 6px;
-    font-size: 17px;
-    color: #263b4b;
-}
-
-.settings-description {
-    margin: 0 0 18px;
-    color: #78838b;
-    font-size: 12px;
-    line-height: 1.5;
-}
-
-.time-field {
-    margin-bottom: 14px;
-}
-
-.time-field label {
-    display: block;
-    margin-bottom: 6px;
-    color: #53616b;
-    font-size: 12px;
-    font-weight: 600;
-}
-
-.time-picker {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-}
-
-.time-picker input {
-    width: 78px;
-    height: 43px;
-    padding: 8px;
-    border: 1px solid #cbd5dc;
-    border-radius: 7px;
-    background: #fbfcfd;
-    color: #263b4b;
-    font: inherit;
-    font-size: 18px;
-    text-align: center;
-}
-
-.time-picker input:focus {
-    outline: none;
-    border-color: #7899ad;
-    box-shadow: 0 0 0 3px rgba(120, 153, 173, 0.15);
-}
-
-.time-separator {
-    font-size: 20px;
-    font-weight: bold;
-    color: #53616b;
-}
-
-.schedule-preview {
-    margin-top: 17px;
-    padding: 13px;
-    border-radius: 8px;
-    background: #f2f6f8;
-    color: #526574;
-    font-size: 12px;
-    line-height: 1.6;
-}
-
-.schedule-preview strong {
-    display: block;
-    margin-bottom: 5px;
-    color: #344b5b;
-}
-
-.add-break-button {
-    width: 100%;
-    margin: 0 0 14px;
-    padding: 9px 10px;
-    background: #eef4f7;
-    color: #40596d;
-    border: 1px dashed #9aafbd;
-    border-radius: 7px;
-    font-size: 12px;
-}
-
-.add-break-button:hover { background: #e2edf2; }
-
-.second-break-fields {
-    padding: 12px;
-    margin: 0 0 14px;
-    border: 1px solid #d9e3e9;
-    border-radius: 8px;
-    background: #fbfcfd;
-}
-
-.second-break-fields[hidden] { display: none; }
-
-.second-break-heading {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 12px;
-    color: #344b5b;
-    font-size: 12px;
-}
-
-.remove-break-button {
-    padding: 5px 8px;
-    background: #f3eeee;
-    color: #8a4d4d;
-    font-size: 11px;
-}
-
-.remove-break-button:hover { background: #eadfdf; }
-
-.total-hours {
-    margin: 20px 0 28px;
-    padding: 17px 20px;
-    background: #fff;
-    border: 1px solid #d9e0e5;
-    border-radius: 10px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-}
-
-.total-hours-label {
-    color: #53616b;
-    font-size: 13px;
-    font-weight: 600;
-    letter-spacing: .04em;
-}
-
-.total-hours-value {
-    color: #263b4b;
-    font-size: 23px;
-    font-weight: 700;
-    font-variant-numeric: tabular-nums;
-}
-
-@media (max-width: 850px) {
+/* Мобильная версия */
+@media (max-width: 600px) {
     .workspace {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
     }
 
     .settings-panel {
-        position: static;
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .main-content {
+        width: 100%;
+        min-width: 0;
+        overflow-x: auto;
+    }
+
+    .week-sheet {
+        width: 100%;
+        min-width: 0;
+        padding: 8px;
+    }
+
+    table {
+        width: 100%;
+        min-width: 0;
+        table-layout: fixed;
+    }
+
+    th, td {
+        padding: 3px;
+        font-size: 9px;
+        overflow-wrap: anywhere;
+    }
+
+    .actions {
+        flex-wrap: wrap;
     }
 }
 
-/* Original page and table styling */
-.page-title {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.page-title h1 {
-    font-size: 25px;
-    margin-bottom: 7px;
-}
-
-.page-title p {
-    color: #777;
-    font-size: 14px;
-}
-
-.week-sheet {
-    background: white;
-    padding: 25px;
-    margin-bottom: 30px;
-    border: 1px solid #ddd;
-    overflow-x: auto;
-}
-
-.logos {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 18px;
-    padding: 0 5px;
-}
-
-.eu-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 25px;
-    color: #222;
-}
-
-.eu-flag {
-    background: #263b83;
-    color: #ffdf36;
-    padding: 8px 13px;
-    font-size: 23px;
-}
-
-.amfi-logo {
-    text-align: center;
-    color: #425d70;
-    font-size: 21px;
-    font-weight: bold;
-}
-
-.amfi-logo small {
-    display: block;
-    font-size: 11px;
-    font-weight: normal;
-}
-
-table {
-    width: 100%;
-    min-width: 780px;
-    border-collapse: collapse;
-    table-layout: fixed;
-}
-
-th {
-    background: #b7ced9;
-    border: 1px solid #222;
-    padding: 10px 6px;
-    text-align: center;
-    vertical-align: middle;
-    font-size: 12px;
-    font-weight: normal;
-    line-height: 1.4;
-    height: 75px;
-}
-
-td {
-    border: 1px solid #222;
-    height: 63px;
-    padding: 4px;
-}
-
-.week-col { width: 8%; }
-.date-col { width: 15%; }
-.schedule-col { width: 15%; }
-.signature-col { width: 26%; }
-.activities-col { width: 36%; }
-
-td input, td textarea {
-    width: 100%;
-    height: 100%;
-    border: none;
-    outline: none;
-    resize: none;
-    background: transparent;
-    font-family: Arial, sans-serif;
-    font-size: 12px;
-    color: #222;
-    padding: 7px 4px;
-}
-
-td input[type="date"] { font-size: 11px; }
-td textarea { line-height: 1.5; }
-
-.week-number {
-    text-align: center;
-    vertical-align: middle;
-}
-
-.week-number input {
-    text-align: center;
-    font-size: 17px;
-    font-weight: bold;
-}
-
-.activities {
-    vertical-align: top;
-    height: 315px;
-}
-
-.activities textarea {
-    padding: 12px;
-    font-size: 13px;
-}
-
-/* Daily schedule checkbox */
-.schedule-cell {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    gap: 3px;
-}
-
-.schedule-toggle {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 10px;
-    cursor: pointer;
-    white-space: nowrap;
-}
-
-.schedule-toggle input {
-    width: 13px;
-    height: 13px;
-    margin: 0;
-    cursor: pointer;
-    flex-shrink: 0;
-}
-
-.schedule-cell textarea {
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-    padding: 3px;
-    font-size: 11px;
-    line-height: 1.3;
-}
-
-.actions {
-    display: flex;
-    justify-content: center;
-    gap: 12px;
-    margin: 25px 0;
-    flex-wrap: wrap;
-}
-
-button {
-    border: none;
-    border-radius: 7px;
-    padding: 12px 20px;
-    cursor: pointer;
-    background: #526f85;
-    color: white;
-    font-size: 13px;
-}
-
-button:hover { background: #40596d; }
-button:disabled { opacity: 0.6; cursor: wait; }
-
-@page {
-    size: A4 portrait;
-    margin: 8mm;
-}
-
+/* ПЕЧАТЬ И СОХРАНЕНИЕ В PDF */
 @media print {
-    html,
-    body {
+    html, body {
         width: 100%;
         margin: 0;
         padding: 0;
@@ -424,9 +586,11 @@ button:disabled { opacity: 0.6; cursor: wait; }
         display: none !important;
     }
 
+    /* Каждая неделя на отдельном листе */
     .week-sheet {
         width: 100% !important;
         max-width: 100% !important;
+        min-width: 0 !important;
         margin: 0 !important;
         padding: 0 !important;
         border: none !important;
@@ -462,6 +626,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
         font-size: 8px;
     }
 
+    /* Таблица помещается по ширине А4 */
     table {
         width: 100% !important;
         min-width: 0 !important;
@@ -491,6 +656,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
 
     td input,
     td textarea {
+        box-sizing: border-box;
+        max-width: 100%;
         font-size: 8px !important;
         padding: 2px !important;
         line-height: 1.25 !important;
@@ -529,9 +696,7 @@ button:disabled { opacity: 0.6; cursor: wait; }
         padding: 2px !important;
     }
 
-    table,
-    tr,
-    td {
+    table, tr, td {
         page-break-inside: avoid;
         break-inside: avoid;
     }
@@ -539,10 +704,18 @@ button:disabled { opacity: 0.6; cursor: wait; }
 </style>
 </head>
 
+<!-- Всё, что видит пользователь -->
+<body>
+
+
+<!-- Всё, что видит пользователь -->
 <body>
 
 <div class="container">
 
+    <a href="/internship-journal/">←</a>
+
+    <!-- Заголовок страницы -->
     <div class="page-title">
         <h1>Erasmus+ Internship Record</h1>
         <p>Weekly Attendance and Activities</p>
@@ -550,16 +723,21 @@ button:disabled { opacity: 0.6; cursor: wait; }
 
     <div class="workspace">
 
-        <!-- Working hours settings on the left -->
+
+        <!-- Левая панель: время работы и перерывы -->
         <aside class="settings-panel">
 
+
             <h2 class="settings-heading">Working hours</h2>
+
 
             <p class="settings-description">
                 Choose your usual workday. Breaks are automatically excluded
                 from the working hours.
             </p>
 
+
+            <!-- Время начала работы -->
             <div class="time-field">
                 <label>Work starts</label>
                 <div class="time-picker">
@@ -573,6 +751,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
                 </div>
             </div>
 
+
+            <!-- Время начала перерыва -->
             <div class="time-field">
                 <label>Break starts</label>
                 <div class="time-picker">
@@ -586,6 +766,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
                 </div>
             </div>
 
+
+            <!-- Время конца перерыва -->
             <div class="time-field">
                 <label>Break ends</label>
                 <div class="time-picker">
@@ -599,14 +781,19 @@ button:disabled { opacity: 0.6; cursor: wait; }
                 </div>
             </div>
 
+
+            <!-- Кнопка: добавить второй перерыв -->
             <button type="button" id="add-break-button"
                     class="add-break-button"
                     onclick="addSecondBreak()">
                 + Add another break
             </button>
 
+
+            <!-- Скрытые поля для второго перерыва -->
             <div id="second-break-fields"
                  class="second-break-fields" hidden>
+
 
                 <div class="second-break-heading">
                     <strong>Second break</strong>
@@ -617,6 +804,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
                     </button>
                 </div>
 
+
+                <!-- Начало второго перерыва -->
                 <div class="time-field">
                     <label>Second break starts</label>
                     <div class="time-picker">
@@ -630,6 +819,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
                     </div>
                 </div>
 
+
+                <!-- Конец второго перерыва -->
                 <div class="time-field">
                     <label>Second break ends</label>
                     <div class="time-picker">
@@ -643,8 +834,11 @@ button:disabled { opacity: 0.6; cursor: wait; }
                     </div>
                 </div>
 
+
             </div>
 
+
+            <!-- Время конца работы -->
             <div class="time-field">
                 <label>Work finishes</label>
                 <div class="time-picker">
@@ -658,6 +852,8 @@ button:disabled { opacity: 0.6; cursor: wait; }
                 </div>
             </div>
 
+
+            <!-- Предпросмотр: какие интервалы получились и сколько часов -->
             <div class="schedule-preview" id="schedule-preview">
                 <strong>Working intervals</strong>
                 <div id="preview-intervals">
@@ -667,84 +863,116 @@ button:disabled { opacity: 0.6; cursor: wait; }
                 <div id="preview-duration">Total: 7 hours</div>
             </div>
 
+
         </aside>
 
-        <!-- Original weekly table -->
+
+        <!-- Правая часть: сюда JavaScript добавляет недели -->
         <main class="main-content">
             <div id="weeks"></div>
         </main>
 
+
     </div>
 
+
+    <!-- Общее количество рабочих часов -->
     <div class="total-hours">
         <span class="total-hours-label">TOTAL WORKING HOURS</span>
         <span class="total-hours-value" id="total-hours">0 hours</span>
     </div>
 
+
+    <!-- Кнопки внизу -->
     <div class="actions">
+        <!-- Добавить новую неделю -->
         <button onclick="addWeek()">+ Add Week</button>
+
+        <!-- Сохранить все недели в Django -->
         <button id="save-button" onclick="saveWeeks()">Save All Weeks</button>
+
+        <!-- Открыть печать / сохранить PDF -->
         <button onclick="window.print()">Print / Save PDF</button>
     </div>
 
+
 </div>
 
+
+<!-- Django передаёт сюда ранее сохранённые недели -->
 {{ saved_weeks|json_script:"saved-weeks-data" }}
 
+
 <script>
+/* Счётчик недель */
 let weekCount = 0;
 
 
-/* Read hours and minutes from the number fields */
+
+/* Берёт время из полей и делает формат ЧЧ:ММ */
 function getTimeValue(prefix) {
+
 
     const hourText =
         document.getElementById(prefix + "-hour").value.trim();
 
+
     const minuteText =
         document.getElementById(prefix + "-minute").value.trim();
 
+
     if (hourText === "" || minuteText === "") return "";
+
 
     const hours = Number(hourText);
     const minutes = Number(minuteText);
+
 
     if (!Number.isInteger(hours) || hours < 0 || hours > 23) {
         return "";
     }
 
+
     if (!Number.isInteger(minutes) || minutes < 0 || minutes > 59) {
         return "";
     }
+
 
     return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
 }
 
 
-/* Convert HH:MM to minutes */
+
+/* Превращает 09:30 в минуты */
 function timeToMinutes(value) {
     const [hours, minutes] = value.split(":").map(Number);
     return hours * 60 + minutes;
 }
 
 
-/* Build the standard work schedule */
+
+/* Собирает стандартный график: работа - перерыв - работа */
 function getStandardSchedule() {
+
 
     const start = getTimeValue("work-start");
     const breakStart = getTimeValue("break-start");
     const breakEnd = getTimeValue("break-end");
     const end = getTimeValue("work-end");
 
+
     if (!start || !breakStart || !breakEnd || !end) {
         return "";
     }
+
 
     const startMinutes = timeToMinutes(start);
     const breakStartMinutes = timeToMinutes(breakStart);
     const breakEndMinutes = timeToMinutes(breakEnd);
     const endMinutes = timeToMinutes(end);
 
+
+    /* Проверяет, что время указано в правильном порядке */
     if (
         startMinutes >= breakStartMinutes ||
         breakStartMinutes >= breakEndMinutes ||
@@ -753,19 +981,26 @@ function getStandardSchedule() {
         return "";
     }
 
+
     const intervals = [];
 
+
+    /* Если включён второй перерыв */
     if (isSecondBreakEnabled()) {
+
 
         const secondBreakStart = getTimeValue("second-break-start");
         const secondBreakEnd = getTimeValue("second-break-end");
+
 
         if (!secondBreakStart || !secondBreakEnd) {
             return "";
         }
 
+
         const secondStartMinutes = timeToMinutes(secondBreakStart);
         const secondEndMinutes = timeToMinutes(secondBreakEnd);
+
 
         if (
             secondStartMinutes <= breakEndMinutes ||
@@ -775,69 +1010,91 @@ function getStandardSchedule() {
             return "";
         }
 
+
         intervals.push(`${start} - ${breakStart}`);
         intervals.push(`${breakEnd} - ${secondBreakStart}`);
         intervals.push(`${secondBreakEnd} - ${end}`);
 
+
     } else {
 
+
+        /* Обычный график с одним перерывом */
         intervals.push(`${start} - ${breakStart}`);
         intervals.push(`${breakEnd} - ${end}`);
     }
+
 
     return intervals.join("\n");
 }
 
 
-/* Calculate hours from all written intervals */
+
+/* Считает рабочие минуты из графика */
 function calculateScheduleHours(schedule) {
+
 
     const intervals = schedule.match(
         /([0-2]?[0-9]):([0-5][0-9])\s*-\s*([0-2]?[0-9]):([0-5][0-9])/g
     ) || [];
 
+
     let totalMinutes = 0;
 
+
     intervals.forEach(interval => {
+
 
         const match = interval.match(
             /([0-2]?[0-9]):([0-5][0-9])\s*-\s*([0-2]?[0-9]):([0-5][0-9])/
         );
 
+
         const start = Number(match[1]) * 60 + Number(match[2]);
         const end = Number(match[3]) * 60 + Number(match[4]);
+
 
         if (end > start) {
             totalMinutes += end - start;
         }
     });
 
+
     return totalMinutes;
 }
 
 
+
+/* Делает красивый текст: 7 hours или 7h 30m */
 function formatHours(minutes) {
+
 
     const hours = Math.floor(minutes / 60);
     const remainder = minutes % 60;
+
 
     if (remainder === 0) {
         return `${hours} ${hours === 1 ? "hour" : "hours"}`;
     }
 
+
     return `${hours}h ${remainder}m`;
 }
 
 
-/* Update the preview on the left */
+
+/* Обновляет предпросмотр слева */
 function updateSchedulePreview() {
+
 
     const schedule = getStandardSchedule();
     const lines = schedule ? schedule.split("\n") : [];
     const total = calculateScheduleHours(schedule);
     const intervalsContainer = document.getElementById("preview-intervals");
 
+
     intervalsContainer.innerHTML = "";
+
 
     if (lines.length) {
         lines.forEach(line => {
@@ -851,6 +1108,7 @@ function updateSchedulePreview() {
         intervalsContainer.appendChild(error);
     }
 
+
     document.getElementById("preview-duration").textContent =
         schedule
             ? `Total: ${formatHours(total)}`
@@ -858,63 +1116,82 @@ function updateSchedulePreview() {
 }
 
 
-/* Calculate total hours for all weeks */
+
+/* Считает общее количество часов по всем неделям */
 function updateTotalHours() {
 
+
     let totalMinutes = 0;
+
 
     document.querySelectorAll(".schedule-input").forEach(input => {
         totalMinutes += calculateScheduleHours(input.value);
     });
+
 
     document.getElementById("total-hours").textContent =
         formatHours(totalMinutes);
 }
 
 
-/* Update only days with the standard-hours checkbox enabled */
+
+/* Подставляет стандартный график в дни с включённой галочкой */
 function applyStandardScheduleToCheckedDays() {
+
 
     const schedule = getStandardSchedule();
 
+
     document.querySelectorAll(".week-sheet .schedule-cell").forEach(cell => {
+
 
         const checkbox = cell.querySelector(".standard-checkbox");
         const input = cell.querySelector(".schedule-input");
+
 
         if (checkbox.checked) {
             input.value = schedule;
         }
     });
 
+
     updateTotalHours();
 }
 
 
-/* Create one week */
+
+/* Создаёт одну неделю с таблицей */
 function createWeek(number) {
+
 
     const section = document.createElement("section");
     section.className = "week-sheet";
 
+
     const standardSchedule = getStandardSchedule();
+
 
     section.innerHTML = `
         <div class="logos">
+
 
             <div class="eu-logo">
                 <span class="eu-flag">✦</span>
                 <span>Erasmus+</span>
             </div>
 
+
             <div class="amfi-logo">
                 🌍 AMFI
                 <small>International</small>
             </div>
 
+
         </div>
 
+
         <table>
+
 
             <colgroup>
                 <col class="week-col">
@@ -923,6 +1200,7 @@ function createWeek(number) {
                 <col class="signature-col">
                 <col class="activities-col">
             </colgroup>
+
 
             <thead>
                 <tr>
@@ -934,11 +1212,16 @@ function createWeek(number) {
                 </tr>
             </thead>
 
+
             <tbody>
 
+
+                <!-- Создаёт 5 строк: с понедельника по пятницу -->
                 ${[1,2,3,4,5].map((day, index) => `
 
+
                     <tr>
+
 
                         ${index === 0 ? `
                             <td rowspan="5" class="week-number">
@@ -946,12 +1229,15 @@ function createWeek(number) {
                             </td>
                         ` : ""}
 
+
                         <td>
                             <input type="date">
                         </td>
 
+
                         <td>
                             <div class="schedule-cell">
+
 
                                 <label class="schedule-toggle">
                                     <input
@@ -962,14 +1248,18 @@ function createWeek(number) {
                                     Standard hours
                                 </label>
 
+
                                 <textarea class="schedule-input">${standardSchedule}</textarea>
+
 
                             </div>
                         </td>
 
+
                         <td>
                             <input type="text">
                         </td>
+
 
                         ${index === 0 ? `
                             <td rowspan="5" class="activities">
@@ -977,121 +1267,165 @@ function createWeek(number) {
                             </td>
                         ` : ""}
 
+
                     </tr>
+
 
                 `).join("")}
 
+
             </tbody>
+
 
         </table>
     `;
 
 
-    /* Each day has its own checkbox */
+
+    /* Для каждого дня включает галочку и пересчёт часов */
     const dayRows = section.querySelectorAll("tbody tr");
 
+
     dayRows.forEach(row => {
+
 
         const checkbox = row.querySelector(".standard-checkbox");
         const scheduleInput = row.querySelector(".schedule-input");
 
+
         checkbox.addEventListener("change", function() {
+
 
             scheduleInput.value = checkbox.checked
                 ? getStandardSchedule()
                 : "";
 
+
             updateTotalHours();
         });
 
+
         scheduleInput.addEventListener("input", updateTotalHours);
     });
+
 
     return section;
 }
 
 
-/* Add a new week */
+
+/* Добавляет новую неделю */
 function addWeek() {
 
+
     weekCount++;
+
 
     document.getElementById("weeks").appendChild(
         createWeek(weekCount)
     );
 
+
     updateTotalHours();
 }
 
 
-/* Collect data from one week */
+
+/* Собирает данные одной недели */
 function collectWeek(section) {
+
 
     const rows = section.querySelectorAll("tbody tr");
 
+
     const days = Array.from(rows).map(row => {
+
 
         const cells = row.querySelectorAll("td");
         const offset = row.querySelector(".week-number") ? 1 : 0;
 
+
         return {
             date: cells[offset].querySelector("input").value,
 
+
             schedule: cells[offset + 1].querySelector("textarea").value,
+
 
             tutor_signature: cells[offset + 2].querySelector("input").value
         };
     });
 
+
     return {
         number: section.querySelector(".week-number input").value,
 
+
         activities: section.querySelector(".activities textarea").value,
+
 
         days: days
     };
 }
 
 
-/* Save all weeks to Django */
+
+/* Сохраняет все недели на сервер Django */
 async function saveWeeks() {
+
 
     const button = document.getElementById("save-button");
     const sections = document.querySelectorAll(".week-sheet");
 
+
     button.disabled = true;
     button.textContent = "Saving...";
 
+
     try {
+
 
         const weeks = Array.from(sections).map(collectWeek);
 
+
+        /* Отправляет данные в Django */
         const response = await fetch("/save-week/", {
 
+
             method: "POST",
+
 
             headers: {
                 "Content-Type": "application/json"
             },
 
+
             body: JSON.stringify({ weeks: weeks })
         });
 
+
         const result = await response.json();
+
 
         if (!response.ok || !result.success) {
             throw new Error(result.error || "Saving failed");
         }
 
+
         alert("All weeks saved successfully!");
+
 
     } catch (error) {
 
+
         console.error(error);
+
 
         alert("Error saving weeks: " + error.message);
 
+
     } finally {
+
 
         button.disabled = false;
         button.textContent = "Save All Weeks";
@@ -1099,52 +1433,69 @@ async function saveWeeks() {
 }
 
 
-/* Load saved weeks from Django database */
+
+/* Загружает сохранённые недели при открытии страницы */
 function loadSavedWeeks() {
+
 
     const savedWeeks = JSON.parse(
         document.getElementById("saved-weeks-data").textContent
     );
+
 
     if (savedWeeks.length === 0) {
         addWeek();
         return;
     }
 
+
     savedWeeks.forEach(saved => {
+
 
         const section = createWeek(saved.number);
         const rows = section.querySelectorAll("tbody tr");
 
+
         saved.days.forEach((day, index) => {
 
+
             if (!rows[index]) return;
+
 
             const cells = rows[index].querySelectorAll("td");
             const offset = rows[index].querySelector(".week-number") ? 1 : 0;
 
+
             cells[offset].querySelector("input").value =
                 day.date || "";
+
 
             const scheduleInput =
                 cells[offset + 1].querySelector("textarea");
 
+
             scheduleInput.value = day.schedule || "";
+
 
             cells[offset + 2].querySelector("input").value =
                 day.tutor_signature || "";
 
+
             const checkbox =
                 rows[index].querySelector(".standard-checkbox");
+
 
             checkbox.checked =
                 scheduleInput.value.trim() === getStandardSchedule().trim();
         });
 
+
         section.querySelector(".activities textarea").value =
             saved.activities || "";
 
+
         document.getElementById("weeks").appendChild(section);
+
 
         weekCount = Math.max(
             weekCount,
@@ -1152,37 +1503,44 @@ function loadSavedWeeks() {
         );
     });
 
+
     updateTotalHours();
 }
 
 
-/* Check whether the second break is enabled */
+
+/* Проверяет, включён ли второй перерыв */
 function isSecondBreakEnabled() {
     return !document.getElementById("second-break-fields").hidden;
 }
 
 
-/* Show the second break fields */
+
+/* Показывает поля второго перерыва */
 function addSecondBreak() {
     document.getElementById("second-break-fields").hidden = false;
     document.getElementById("add-break-button").hidden = true;
 
+
     updateSchedulePreview();
     applyStandardScheduleToCheckedDays();
 }
 
 
-/* Hide the second break fields */
+
+/* Скрывает поля второго перерыва */
 function removeSecondBreak() {
     document.getElementById("second-break-fields").hidden = true;
     document.getElementById("add-break-button").hidden = false;
 
+
     updateSchedulePreview();
     applyStandardScheduleToCheckedDays();
 }
 
 
-/* Listen for changes in all time fields */
+
+/* Если поменять время — сразу пересчитать график и часы */
 [
     "work-start",
     "break-start",
@@ -1192,18 +1550,24 @@ function removeSecondBreak() {
     "second-break-end"
 ].forEach(prefix => {
 
+
     ["hour", "minute"].forEach(part => {
 
+
         const field = document.getElementById(`${prefix}-${part}`);
+
 
         field.addEventListener("input", () => {
             updateSchedulePreview();
             applyStandardScheduleToCheckedDays();
         });
 
+
         field.addEventListener("change", () => {
 
+
             const max = part === "hour" ? 23 : 59;
+
 
             if (field.value !== "") {
                 field.value = String(
@@ -1211,23 +1575,31 @@ function removeSecondBreak() {
                 );
             }
 
+
             updateSchedulePreview();
             applyStandardScheduleToCheckedDays();
         });
 
+
     });
+
 
 });
 
 
-/* Start the page */
+
+/* Что происходит при открытии страницы */
 loadSavedWeeks();
+
 
 updateSchedulePreview();
 
+
 updateTotalHours();
 
+
 </script>
+
 
 </body>
 </html>

@@ -70,3 +70,7 @@ def save_week(request):
             {"success": False, "error": str(error)},
             status=400
         )
+
+
+def internship_journal(request):
+    return render(request, 'pages/internship-journal.html')
